@@ -26,3 +26,5 @@ hs_err_pid*
 
 /.idea/
 /MeLeetCode.iml
+/.idea/inspectionProfiles/
+/.idea/workspace.xml
