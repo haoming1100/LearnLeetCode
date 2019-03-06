@@ -1,5 +1,8 @@
 package com.hm;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author haoming
  * <p>
@@ -78,6 +81,57 @@ public class SumOfTwoNumbers {
                 if (nums[x] + nums[y] == target && x != y) {
                     return new int[]{x,y};
                 }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * twoSum4 是典型的 空间换时间的做法
+     * 两遍哈希值的计算
+     * 计算结果:执行用时: 13 ms 内存消耗: 41.9 MB
+     * @param nums
+     * @param target
+     * @return
+     */
+    private static int[] twoSum4(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int x = 0 ; x < nums.length; x ++) {
+            //空间换时间，由于hash 表查找某个下标总是 O(1)的
+            // key 代表着 数值，value 代表着 下标
+            map.put(nums[x], x);
+        }
+        //查找下标
+        for (int y = 0; y < nums.length; y ++) {
+            int difference = target - nums[y];
+            //查看差值是否为 map 的key
+            // 能重复利用这个数组中同样的元素 所以 y != map.get(difference)
+            if (map.containsKey(difference) && y != map.get(difference)) {
+                return new int[]{y, map.get(difference)};
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 一遍哈希表
+     * 计算结果：执行用时: 5 ms 内存消耗: 38.9 MB
+     * @param nums
+     * @param target
+     * @return
+     */
+    private static int[] twoSum5(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        //查找下标
+        for (int y = 0; y < nums.length; y ++) {
+            int difference = target - nums[y];
+            //查看差值是否为 map 的key
+            // 能重复利用这个数组中同样的元素 所以 y != map.get(difference)
+            if (map.containsKey(difference) && y != map.get(difference)) {
+                return new int[]{y, map.get(difference)};
+            } else {
+                map.put(nums[y], y);
             }
         }
         return null;
