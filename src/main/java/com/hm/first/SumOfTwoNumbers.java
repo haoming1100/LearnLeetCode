@@ -1,4 +1,4 @@
-package com.hm;
+package com.hm.first;
 
 import java.util.HashMap;
 import java.util.Map;
