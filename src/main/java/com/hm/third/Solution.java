@@ -1,8 +1,6 @@
 package com.hm.third;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 题目描述
@@ -33,7 +31,7 @@ public class Solution {
     public static void main(String[] args) {
         Solution solution = new Solution();
         String s = "aedfghedfgh";
-        System.out.println(solution.lengthOfLongestSubstring1(s));
+        System.out.println(solution.lengthOfLongestSubstring2(s));
     }
 
     /**
@@ -87,7 +85,11 @@ public class Solution {
      * 滑动窗口  滑动窗口是数组/字符串问题中常用的抽象概念。
      * 窗口通常是在数组/字符串中由开始和结束索引定义的一系列元素的集合，即 [i, j)[i,j)（左闭，右开）。
      * 而滑动窗口是可以将两个边界向某一方向“滑动”的窗口。
-     * 例如，我们将 [i, j)[i,j) 向右滑动 11 个元素，则它将变为 [i+1, j+1)[i+1,j+1)（左闭，右开）。
+     * 例如，我们将 [i, j)[i,j) 向右滑动 1 个元素，则它将变为 [i+1, j+1)[i+1,j+1)（左闭，右开）。
+     *
+     * 回到我们的问题，我们使用 HashSet 将字符存储在当前窗口 [i, j)[i,j)（最初 j = ij=i）中。
+     * 然后我们向右侧滑动索引 jj，如果它不在 HashSet 中，我们会继续滑动 jj。直到 s[j] 已经存在于 HashSet 中。
+     * 此时，我们找到的没有重复字符的最长子字符串将会以索引 ii 开头。如果我们对所有的 ii 这样做，就可以得到答案。
      * @param s
      * @return
      */
@@ -98,12 +100,38 @@ public class Solution {
         while (i < n && j < n) {
             // 判断 Set 中是否包含 某字段
             if (!set.contains(s.charAt(j))){
+                // 右边窗口开始右移
                 set.add(s.charAt(j++));
                 ans = Math.max(ans, j - i);
             }
             else {
+                // 左边窗口开始右移,所以 起始点 就变成了 i++
                 set.remove(s.charAt(i++));
             }
+        }
+        return ans;
+    }
+
+    /**
+     * 上述的方法最多需要执行 2n 个步骤。事实上，它可以被进一步优化为仅需要 n 个步骤。我们可以定义字符到索引的映射，
+     * 而不是使用集合来判断一个字符是否存在。 当我们找到重复的字符时，我们可以立即跳过该窗口。
+     * 也就是说，如果 s[j]s[j] 在 [i, j)[i,j) 范围内有与 j'
+     * 重复的字符，我们不需要逐渐增加 i。 我们可以直接跳过 [i，j']
+     *  范围内的所有元素，并将 i 变为 j' + 1
+     * @param s
+     * @return
+     */
+    public int lengthOfLongestSubstring2(String s) {
+        int n = s.length(), ans = 0;
+        // current index of character
+        Map<Character, Integer> map = new HashMap<>();
+        // try to extend the range [i, j]
+        for (int j = 0, i = 0; j < n; j++) {
+            if (map.containsKey(s.charAt(j))) {
+                i = Math.max(map.get(s.charAt(j)), i);
+            }
+            ans = Math.max(ans, j - i + 1);
+            map.put(s.charAt(j), j + 1);
         }
         return ans;
     }
